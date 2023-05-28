@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char categoria[6], enunciado[102];
+    float alternativas_f[3], resposta_f;
+    int alternativas_i[3], resposta_i; 
+    char resposta_str[3];
+} Pergunta;
+
+int main() {
+    printf("---Etapa de treinamento---\n");
+
+    Pergunta perguntas[5];
+    int indice = 0;
+    for (indice = 0; indice <= 5; indice++) {
+        scanf("%s", perguntas[indice].categoria);
+        getchar();
+
+        if (strcmp(perguntas[indice].categoria, "FIM") == 0)
+            break;
+        fgets(perguntas[indice].enunciado, 102, stdin);
+
+        if (strcmp(perguntas[indice].categoria, "INT") == 0) {
+            for (int contador = 0; contador < 3; contador++) {
+                scanf("%d", &perguntas[indice].alternativas_i[contador]);
+            }
+            for (int contador = 0; contador < 3; contador++) {
+                printf("Alternativa correta eh %d?\n", perguntas[indice].alternativas_i[contador]);
+                scanf("%s", perguntas[indice].resposta_str);
+
+                if (strcmp(perguntas[indice].resposta_str, "SIM") == 0) {
+                    perguntas[indice].resposta_i = perguntas[indice].alternativas_i[contador];
+                    break;
+                }
+            }
+        }
+        if (strcmp(perguntas[indice].categoria, "FLOAT") == 0) {
+            for (int contador = 0; contador < 3; contador++) {
+                scanf("%f", &perguntas[indice].alternativas_f[contador]);
+            }
+            for (int contador = 0; contador < 3; contador++) {
+                printf("Alternativa correta eh %.2f?\n", perguntas[indice].alternativas_f[contador]);
+                scanf("%s", perguntas[indice].resposta_str);
+
+                if (strcmp(perguntas[indice].resposta_str, "SIM") == 0) {
+                    perguntas[indice].resposta_f = perguntas[indice].alternativas_f[contador];
+                    break;
+                }
+            }
+        }
+    }
+
+    if (indice == 6) {
+        getchar();
+    }
+
+    printf("---Etapa de testes---\n");
+    char pergunta[102];
+
+    while (strcmp(pergunta, "FIM\n") != 0) {
+        fgets(pergunta, 102, stdin);
+
+        if (strcmp(pergunta, "FIM\n") == 0) {
+            break;
+        }
+        int encontrada = 0;
+
+        for (int j = 0; j < 5; j++) {
+            if (strcmp(pergunta, perguntas[j].enunciado) == 0) {
+                if (strcmp(perguntas[j].categoria, "INT") == 0) {
+                    printf("A resposta eh: %d\n", perguntas[j].resposta_i);
+                    encontrada++;
+                    break;
+                }
+                if (strcmp(perguntas[j].categoria, "FLOAT") == 0) {
+                    printf("A resposta eh: %.2f\n", perguntas[j].resposta_f);
+                    encontrada++;
+                    break;
+                }
+            }
+        }
+        if (encontrada < 1) {
+            printf("Me desculpe, ainda não fui treinado para responder essa pergunta.\n");
+        }
+    }
+    return 0;
+}
